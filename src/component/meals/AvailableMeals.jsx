@@ -38,8 +38,8 @@ const AvailableMeals = () => {
   const [error, setError] = useState(null);
 
   const fetchMenuHandler = useCallback(async () => {
-    setIsLoading(true);
     setError(null);
+    setIsLoading(true);
     try {
       const response = await fetch('https://max-web-api-e658a-default-rtdb.firebaseio.com/meals.json');
       if (!response.ok) {
@@ -60,54 +60,52 @@ const AvailableMeals = () => {
           })
         }
         setMeals(loadedMeals);
-      }, 2000);
-
-
+      }, 500);
     } catch (error) {
       setError(error.message);
     }
     setIsLoading(false);
   }, []);
 
+  // This will run anytime fetchMenuHandler changes.
   useEffect(() => {
     fetchMenuHandler();
   }, [fetchMenuHandler]);
 
-  const getContent = () => {
+  let content =
+    <section className={classes.mealsLoading}>
+      <p>Loading...</p>
+    </section>;
 
-    let content = <p>Getting Meals...</p>;
- 
-    // // const mealsList = DUMMY_MEALS.map(meal =>{
-    if (meals) {
-      const mealsList = meals.map(meal => {
-        return (<MealItem
-          key={meal.id}
-          id={meal.id}
-          name={meal.name}
-          price={meal.price}
-          description={meal.description} />);
-      });
+  if (error) {
+    content = <p>{error}</p>;
+  }
 
+  if (isLoading) {
+    content =
+      <section className={classes.mealsLoading}><p>Is Loading...</p>
+      </section>;
+  }
 
-      if (meals.length > 0) {
-        content = mealsList;
-      }
+  if (meals) {
+    const mealsList = meals.map(meal => {
+      return (<MealItem
+        key={meal.id}
+        id={meal.id}
+        name={meal.name}
+        price={meal.price}
+        description={meal.description} />);
+    });
+
+    if (meals.length > 0) {
+      content = mealsList;
     }
-
-    // if (error) {
-    //   content = <p>{error}</p>;
-    // }
-
-    // if (isLoading) {
-    //   content = <p>Loading...</p>;
-    // }
-    return content;
   }
 
   return (
     <section className={classes.meals}>
       <Card>
-        <ul>{getContent()}</ul>
+        <ul>{content}</ul>
       </Card>
     </section>
   );
