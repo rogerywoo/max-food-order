@@ -63,7 +63,7 @@ const Cart = (props) => {
       {cartItems}
       <div className={classes.total}>
         <div>Total Amount</div>
-        <div>{totalAmount}</div>T
+        <div>{totalAmount}</div>
       </div>
       {isCheckout && <Checkout onCancel={props.onHideCart}/>}
       {modalAction}
